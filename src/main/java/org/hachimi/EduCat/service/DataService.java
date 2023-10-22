@@ -1,5 +1,6 @@
 package org.hachimi.EduCat.service;
 
+import org.hachimi.EduCat.Entity.User;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +36,27 @@ public class DataService {
     @Bean
     public Connection dataBaseConnection() throws SQLException{
         return DriverManager.getConnection(databaseUrl, databaseUserName, databasePassword);
+    }
+
+    public JSONObject insertUser(User user){
+        JSONObject ret = new JSONObject();
+        try{
+            String sql = "INSERT INTO `utilisateur` (`IdUser`, `Nom`, `Prenom`, `DateNaiss`, `email`, `Mdp`, `IdMat`)" +
+                    " VALUES (NULL, ?, ?, ?, ?, ?, '2')";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, user.getName());
+            pstmt.setString(2, user.getForename());
+            pstmt.setString(3, user.getBirthDay());
+            pstmt.setString(4, user.getEmail());
+            pstmt.setString(5, user.getMdp());
+            int rs = pstmt.executeUpdate();
+            if (rs <= 0) ret.put("error", "Error when access to DataBase");
+        }catch (SQLException e){
+            e.printStackTrace();
+            ret.put("error" ,  "Error when access to DataBase");
+        }
+
+        return ret;
     }
 
     public JSONObject getUser(String user_name, String password){
@@ -78,8 +100,4 @@ public class DataService {
         return jsonArray;
     }
 
-//    public List<Map<String, Object>> getUser(string ){
-//        String sql = "SELECT * FROM infos";
-//        return  jdbcTemplate.queryForList(sql);
-//    }
 }
