@@ -1,6 +1,8 @@
 package org.hachimi.EduCat.service;
 
 import org.hachimi.EduCat.Entity.User;
+import org.hachimi.EduCat.Exceptions.ServerException;
+import org.hachimi.EduCat.Exceptions.UserNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +40,7 @@ public class DataService {
         return DriverManager.getConnection(databaseUrl, databaseUserName, databasePassword);
     }
 
-    public JSONObject insertUser(User user){
+    public JSONObject insertUser(User user) throws ServerException {
         JSONObject ret = new JSONObject();
         try{
             String sql = "INSERT INTO `utilisateur` (`IdUser`, `Nom`, `Prenom`, `DateNaiss`, `email`, `Mdp`, `IdMat`)" +
@@ -52,30 +54,38 @@ public class DataService {
             int rs = pstmt.executeUpdate();
             if (rs <= 0) ret.put("error", "Error when access to DataBase");
         }catch (SQLException e){
-            e.printStackTrace();
-            ret.put("error" ,  "Error when access to DataBase");
+            System.out.println(e.getMessage());
+            throw new ServerException();
         }
 
         return ret;
     }
 
-    public JSONObject getUser(String user_name, String password){
-        JSONObject jsonObject = new JSONObject();
+    public JSONObject getUser(String user_mail, String user_password) throws ServerException, UserNotFoundException{
+        JSONObject ret = new JSONObject();
         try{
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * FROM utilisateur WHERE Nom = '"+user_name + "' AND MDP ='" + password  + "'");
+            String sql = "SELECT * FROM utilisateur WHERE email = ? AND Mdp = ?";
+            PreparedStatement pstmt = connection.prepareStatement(sql);
+            pstmt.setString(1, user_mail);
+            pstmt.setString(2, user_password);
+            ResultSet resultSet = pstmt.executeQuery();
+            int rows_count = 0;
             if(resultSet.next()){
+                rows_count ++ ;
                 ResultSetMetaData metaData = resultSet.getMetaData();
                 int columnCount = metaData.getColumnCount();
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnName(i);
-                    jsonObject.put(columnName, resultSet.getString(columnName));
+                    ret.put(columnName, resultSet.getString(columnName));
                 }
             }
+            if(rows_count <= 0 ) throw new UserNotFoundException();
         }catch (SQLException e){
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            throw new ServerException();
         }
-        return jsonObject;
+
+        return ret;
     }
 
     public JSONArray getTableData(String table) {
@@ -96,6 +106,7 @@ public class DataService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+
         }
         return jsonArray;
     }

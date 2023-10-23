@@ -1,6 +1,8 @@
 package org.hachimi.EduCat.controller;
 
 import org.hachimi.EduCat.Entity.User;
+import org.hachimi.EduCat.Exceptions.InformationsException;
+import org.hachimi.EduCat.Exceptions.ServerException;
 import org.hachimi.EduCat.service.DataService;
 import org.hachimi.EduCat.service.JWTService;
 import org.json.JSONException;
@@ -19,22 +21,29 @@ public class LogSign {
 
     @PostMapping(path = "/login")
     public String login(@RequestBody String body){
-        JSONObject json_body = new JSONObject(body);
-        String user_name = json_body.getString("user_name");
-        String password = json_body.getString("password");
-
-        JSONObject payloadUser = new JSONObject();
         JSONObject ret = new JSONObject();
-        JSONObject json_user_data = dataService.getUser(user_name, password);
-        if(!json_user_data.isEmpty()){
+        JSONObject json_body = new JSONObject(body);
+        try{
+            String user_mail;
+            String user_password;
+            try{
+                user_mail = json_body.getString("user_mail");
+                user_password = json_body.getString("user_password");
+            }catch (JSONException e){
+                throw new ServerException();
+            }
+            if(user_mail == "" || user_password == "") throw new InformationsException();
+
+            JSONObject payloadUser = new JSONObject();
+            JSONObject json_user_data = dataService.getUser(user_mail, user_password);
             String idUser = json_user_data.getString("IdUser");
             payloadUser.put("id", idUser);
             String jws = JWTService.generateJWT(payloadUser);
             ret.put("jws" , jws);
-        }else {
-            ret.put("error", "USER NOT FOUND");
-        }
 
+        }catch (Exception e){
+            ret.put("error", e.getMessage());
+        }
         return ret.toString();
     }
 
@@ -46,11 +55,9 @@ public class LogSign {
         try{
             User user = new User(json_body);
             ret = dataService.insertUser(new User(json_body));
-        }catch (JSONException e){
-            ret.put("error", "Request body don't contain all infos");
+        }catch (Exception e){
+            ret.put("error", e.getMessage());
         }
-
-
         return ret.toString();
     }
 }
