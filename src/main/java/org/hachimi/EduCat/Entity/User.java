@@ -12,30 +12,30 @@ import java.util.regex.Pattern;
 public class User {
     private String name;
     private String forename;
-    private String  birthDay;
+    private String  classe;
     private String email;
-    private String mdp;
+    private String passeword;
 
-    public User(String name, String forename, String birthDay, String email, String mdp) {
+    public User(String name, String forename, String classe, String email, String mdp) {
         this.name = name;
         this.forename = forename;
-        this.birthDay = birthDay;
+        this.classe = classe;
         this.email = email;
-        this.mdp = mdp;
+        this.passeword = passeword;
     }
 
     public User(JSONObject infos) throws Exception {
         try{
             this.name = infos.getString("user_name");
             this.forename = infos.getString("user_forename");
-            this.birthDay = infos.getString("user_birthday");
+            this.classe = infos.getString("user_classe");
             this.email = infos.getString("user_email");
-            this.mdp = infos.getString("user_password");
+            this.passeword = infos.getString("user_password");
         }catch (JSONException e) {
             throw new ServerException();
         }
-        if (this.name == "" || this.forename == "" || this.birthDay == "" || this.email == "" ||
-                this.mdp == "" ){
+        if (this.name == "" || this.forename == "" || this.classe == "" || this.email == "" ||
+                this.passeword == "" ){
             throw new InformationsException();
         }
 
@@ -58,15 +58,15 @@ public class User {
         return forename;
     }
 
-    public String getBirthDay() {
-        return birthDay;
+    public String getClasse() {
+        return classe;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public String getMdp() {
-        return mdp;
+    public String getPasseword() {
+        return passeword;
     }
 }

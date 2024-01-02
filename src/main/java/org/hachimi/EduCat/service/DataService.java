@@ -43,14 +43,14 @@ public class DataService {
     public JSONObject insertUser(User user) throws ServerException {
         JSONObject ret = new JSONObject();
         try{
-            String sql = "INSERT INTO `utilisateur` (`IdUser`, `Nom`, `Prenom`, `DateNaiss`, `email`, `Mdp`, `IdMat`)" +
-                    " VALUES (NULL, ?, ?, ?, ?, ?, '2')";
+            String sql = "INSERT INTO `utilisateur` (`IdUser`, `Nom`, `Prenom`, `Email`, `Classe` , `MotDePasse`)" +
+                    " VALUES (NULL, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setString(1, user.getName());
             pstmt.setString(2, user.getForename());
-            pstmt.setString(3, user.getBirthDay());
-            pstmt.setString(4, user.getEmail());
-            pstmt.setString(5, user.getMdp());
+            pstmt.setString(3, user.getEmail());
+            pstmt.setString(4, user.getClasse());
+            pstmt.setString(5, user.getPasseword());
             int rs = pstmt.executeUpdate();
             if (rs <= 0) ret.put("error", "Error when access to DataBase");
         }catch (SQLException e){
@@ -64,7 +64,7 @@ public class DataService {
     public JSONObject getUser(String user_mail, String user_password) throws ServerException, UserNotFoundException{
         JSONObject ret = new JSONObject();
         try{
-            String sql = "SELECT * FROM utilisateur WHERE email = ? AND Mdp = ?";
+            String sql = "SELECT * FROM utilisateur WHERE Email = ? AND MotDePasse = ?";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setString(1, user_mail);
             pstmt.setString(2, user_password);

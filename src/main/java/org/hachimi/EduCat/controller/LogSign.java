@@ -23,11 +23,12 @@ public class LogSign {
     public String login(@RequestBody String body){
         JSONObject ret = new JSONObject();
         JSONObject json_body = new JSONObject(body);
+
         try{
             String user_mail;
             String user_password;
             try{
-                user_mail = json_body.getString("user_mail");
+                user_mail = json_body.getString("user_email");
                 user_password = json_body.getString("user_password");
             }catch (JSONException e){
                 throw new ServerException();
