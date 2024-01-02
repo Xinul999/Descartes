@@ -1,7 +1,7 @@
 package org.hachimi.EduCat.controller;
 
 
-import org.hachimi.EduCat.service.DataService;
+import org.hachimi.EduCat.repository.DataService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

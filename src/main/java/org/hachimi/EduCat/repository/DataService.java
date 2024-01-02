@@ -1,4 +1,4 @@
-package org.hachimi.EduCat.service;
+package org.hachimi.EduCat.repository;
 
 import org.hachimi.EduCat.Entity.User;
 import org.hachimi.EduCat.Exceptions.ServerException;
@@ -6,18 +6,17 @@ import org.hachimi.EduCat.Exceptions.UserNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
-@Service
+@Repository
 public class DataService {
 
-    private String databaseUrl;
-    private String databasePassword;
+    private final String databaseUrl;
+    private final String databasePassword;
 
-    private String databaseUserName;
+    private final String databaseUserName;
 
     Connection connection = null;
     public DataService( @Value("${database.url}") String databaseUrl,
@@ -35,7 +34,6 @@ public class DataService {
 
     }
 
-    @Bean
     public Connection dataBaseConnection() throws SQLException{
         return DriverManager.getConnection(databaseUrl, databaseUserName, databasePassword);
     }

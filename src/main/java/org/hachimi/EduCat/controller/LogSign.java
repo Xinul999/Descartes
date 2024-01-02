@@ -2,8 +2,7 @@ package org.hachimi.EduCat.controller;
 
 import org.hachimi.EduCat.Entity.User;
 import org.hachimi.EduCat.Exceptions.InformationsException;
-import org.hachimi.EduCat.Exceptions.ServerException;
-import org.hachimi.EduCat.service.DataService;
+import org.hachimi.EduCat.repository.DataService;
 import org.hachimi.EduCat.service.JWTService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class LogSign {
-    private DataService dataService;
+    private final DataService dataService;
 
     public LogSign(DataService dataService){
         this.dataService = dataService;
@@ -31,7 +30,7 @@ public class LogSign {
                 user_mail = json_body.getString("user_email");
                 user_password = json_body.getString("user_password");
             }catch (JSONException e){
-                throw new ServerException();
+                throw new InformationsException();
             }
             if(user_mail == "" || user_password == "") throw new InformationsException();
 
@@ -52,7 +51,6 @@ public class LogSign {
     public  String signin(@RequestBody String body){
         JSONObject ret = new JSONObject();
         JSONObject json_body = new JSONObject(body);
-
         try{
             User user = new User(json_body);
             ret = dataService.insertUser(new User(json_body));
