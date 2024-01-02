@@ -27,9 +27,10 @@ public class Conjugation {
             String group;
             try{
                 group = json_body.getString("group");
-                String verb = conjugaisonService.generateWord(group,  "present");
-                ret.put("verb" , verb);
-
+                JSONObject verb_data = conjugaisonService.generateVerb(group,  "present");
+                for (String key : verb_data.keySet()){
+                    ret.put(key , verb_data.get(key));
+                }
             }catch (JSONException e){
                 throw new InformationsException();
             }

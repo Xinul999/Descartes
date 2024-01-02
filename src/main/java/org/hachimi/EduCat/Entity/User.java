@@ -14,28 +14,28 @@ public class User {
     private String forename;
     private String  classe;
     private String email;
-    private String passeword;
+    private String password;
 
-    public User(String name, String forename, String classe, String email, String mdp) {
+    public User(String name, String forename, String classe, String email, String password) {
         this.name = name;
         this.forename = forename;
         this.classe = classe;
         this.email = email;
-        this.passeword = passeword;
+        this.password = password;
     }
 
-    public User(JSONObject infos) throws Exception {
+    public User(JSONObject infos) throws InformationsException,ServerException, MailFormatException  {
         try{
             this.name = infos.getString("user_name");
             this.forename = infos.getString("user_forename");
             this.classe = infos.getString("user_classe");
             this.email = infos.getString("user_email");
-            this.passeword = infos.getString("user_password");
+            this.password = infos.getString("user_password");
         }catch (JSONException e) {
             throw new ServerException();
         }
         if (this.name == "" || this.forename == "" || this.classe == "" || this.email == "" ||
-                this.passeword == "" ){
+                this.password == "" ){
             throw new InformationsException();
         }
 
@@ -67,6 +67,6 @@ public class User {
     }
 
     public String getPasseword() {
-        return passeword;
+        return password;
     }
 }
