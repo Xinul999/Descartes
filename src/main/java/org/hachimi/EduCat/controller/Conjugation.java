@@ -26,7 +26,8 @@ public class Conjugation {
         try{
             String group;
             try{
-                JSONObject verb_data = conjugaisonService.generateVerb();
+                int difficulty = json_body.getInt("difficulty");
+                JSONObject verb_data = conjugaisonService.generateVerb(difficulty);
                 for (String key : verb_data.keySet()){
                     ret.put(key , verb_data.get(key));
                 }
