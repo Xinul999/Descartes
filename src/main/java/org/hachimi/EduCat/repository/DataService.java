@@ -92,7 +92,6 @@ public class DataService {
         try {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + table);
-
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
             while (resultSet.next()) {
@@ -105,7 +104,6 @@ public class DataService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-
         }
         return jsonArray;
     }
