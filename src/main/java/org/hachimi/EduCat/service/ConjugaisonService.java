@@ -69,8 +69,6 @@ public class ConjugaisonService {
         int response_index = responses_array.indexOf(conjuged_verb);
         ret.put("responses" , responses);
         ret.put("response_index", response_index);
-
-
         if(verb.startsWith("e") || verb.startsWith("a") || verb.startsWith("i") || verb.startsWith("u")
         || verb.startsWith("o") || verb.startsWith("é") || verb.startsWith("è")){
             if(pronom.equals("je")) pronom = "j'";
@@ -92,9 +90,7 @@ public class ConjugaisonService {
     public String conjugVerbPresent(String pronom , String verb,String  group){
         String conjugaison = null;
         String radical = verb.substring(0, verb.length() - 2);
-        System.out.println(group);
         if(group.equals(groups.get(0))){
-
             String radical_y_replaced = radical;
             String terminaison = radical.substring(radical.length()- 2);
             if(terminaison.equals("oy") || terminaison.equals("uy") || terminaison.equals("ay")) radical_y_replaced = radical.substring(0, radical.length()- 1) + "i";
@@ -123,14 +119,17 @@ public class ConjugaisonService {
     public String conjugVerbImparfait(String pronom , String verb,String  group){
         String conjugaison = null;
         String radical = verb.substring(0, verb.length() - 2);
-        System.out.println(group);
+
         if(group.equals(groups.get(0))){
+            String radical_corrected = radical;
+            if (radical.endsWith("g"))  radical_corrected = radical_corrected + 'e';
+            if (radical.endsWith("c"))  radical_corrected = radical_corrected.substring(0, radical_corrected.length()-1) + 'ç';
             conjugaison = switch (pronom) {
-                case "je", "tu" -> radical + "ais";
-                case "il/elle" -> radical + "ait";
+                case "je", "tu" -> radical_corrected + "ais";
+                case "il/elle" -> radical_corrected + "ait";
                 case "nous" -> radical + "ions";
                 case "vous" -> radical + "iez";
-                case "ils/elles" -> radical + "aient";
+                case "ils/elles" -> radical_corrected + "aient";
                 default -> null;
             };
         }
@@ -151,7 +150,6 @@ public class ConjugaisonService {
         //ne marche pas pour certains mots : https://www.toutelaconjugaison.com/lecon-conjugaison-indicatif.futur.simple.html
         String radical = verb.substring(0, verb.length() - 2);
         String conjugaison = null;
-        System.out.println(group);
         if(group.equals(groups.get(0))){
             conjugaison = switch (pronom) {
                 case "je" -> radical + "erai";
